@@ -24,7 +24,8 @@
 #define __MAIN_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -38,86 +39,117 @@ extern "C" {
 #include "stm32f1xx_ll_dma.h"
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_gpio.h"
-#include<stdint.h>
+#include <stdint.h>
 #define SIZE 34
 #if defined(USE_FULL_ASSERT)
 #include "stm32_assert.h"
 #endif /* USE_FULL_ASSERT */
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-extern uint16_t arr, rc, psc, cnt;
-extern bool ns;
-extern uint16_t nv;
-struct Pair{
-        uint32_t time;
-        bool state;
+  /* Private includes ----------------------------------------------------------*/
+  /* USER CODE BEGIN Includes */
+  extern uint16_t autoreload, repeat, prescale;
+  extern bool new_state, processed;
+  struct Pair
+  {
+    uint32_t time;
+    bool state;
   };
-class Buff{
+  class Buff
+  {
   private:
     Pair array[SIZE - 1];
-    uint32_t counter;
+    uint32_t lenght;
     uint32_t countSend;
-    uint16_t ARR;/*autoreload*/
-    uint16_t RR;/*repetition register*/
-    uint16_t PR;/*prescaler*/
+    uint16_t ARR; /*autoreload*/
+    uint16_t RR;  /*repetition register*/
+    uint16_t PR;  /*prescaler*/
+    bool most_value = false;
+    uint16_t part_of_val;
+
   public:
-inline Buff(Pair* pair, uint32_t lenght){
-      counter = 0x00U;
+    inline void Increment(void){
+      if(countSend < lenght - 0x01U){
+        ++countSend;
+      }
+      else{
+        countSend = 0x04U;
+    }
+    }
+    inline Buff(Pair *pair, uint32_t new_lenght)
+    {
+      lenght = 0x00U;
       countSend = 0x00U;
-      ARR = 0U;
-      RR = 0U;
-      PR = 0U;
-      for(uint32_t i = 0; i < lenght - 1; ++i){
+      part_of_val = 0x00U;
+      ARR = 0x00U;
+      RR = 0x00U;
+      PR = 0x00U;
+      for (uint32_t i = 0U; i < lenght - 1U; ++i)
+      {
         array[i] = pair[i];
       }
+      lenght = new_lenght;
     }
-inline void addPair(const Pair& pair){
-  array[counter++] = pair;
-}
-inline uint32_t getSize(void) const{
-  return counter;
-}
-inline void getTIM(const uint32_t& count){
-  if(array[count].time < 2){
-    ARR = 1;
-    RR = 0; 
-    PR = 35;
-  }
-  else if(array[count].time > 1 && array[count].time < 0xFFFF){
-    ARR =(uint32_t) array[count].time;
-    RR = 0; 
-    PR = 71;
-  }
-  else {
-    asm("nop");/*unused option for testing*/
-  }
-}
-inline bool getValue(void) const {
-  return array[counter].state;
-}
+    inline void addPair(const Pair &pair)
+    {
+      array[lenght++] = pair;
+    }
+    inline void getTIM(void)
+    {
+      if (most_value)
+      {
+        ARR = (array[countSend].time)%65535U;
+        most_value = false;
+        Increment();
+        //++countSend;
+      }
+      if (array[countSend].time < 2)
+      {
+        if(array[countSend].time == 0x00U){
+          Increment();
+          //++countSend;
+        }
+        ARR = 1;
+        RR = 0;
+        PR = 35;
+        ++countSend;
+      }
+      else if (array[countSend].time > 1 && array[countSend].time < 0xFFFF)
+      {
+        ARR = (uint32_t)array[countSend].time;
+        RR = 0;
+        PR = 71;
+        Increment();
+        //++countSend;
+      }
+      else
+      {
+        ARR = 65535U;
+        RR = array[countSend].time/65535;
+        most_value = true;
+      }
+    }
   };
 
-extern Buff buff;
-/* USER CODE END Includes */
+  extern Buff buff;
+  /* USER CODE END Includes */
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
+  /* Exported types ------------------------------------------------------------*/
+  /* USER CODE BEGIN ET */
 
-/* USER CODE END ET */
+  /* USER CODE END ET */
 
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
+  /* Exported constants --------------------------------------------------------*/
+  /* USER CODE BEGIN EC */
 
-/* USER CODE END EC */
+  /* USER CODE END EC */
 
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
+  /* Exported macro ------------------------------------------------------------*/
+  /* USER CODE BEGIN EM */
 
-/* USER CODE END EM */
+  /* USER CODE END EM */
 
-/* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+  /* Exported functions prototypes ---------------------------------------------*/
+  void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -129,20 +161,20 @@ void Error_Handler(void);
 #define Out_Pin LL_GPIO_PIN_8
 #define Out_GPIO_Port GPIOA
 #ifndef NVIC_PRIORITYGROUP_0
-#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
-                                                                 4 bits for subpriority */
-#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
-                                                                 3 bits for subpriority */
-#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
-                                                                 2 bits for subpriority */
-#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
-                                                                 1 bit  for subpriority */
-#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
-                                                                 0 bit  for subpriority */
+#define NVIC_PRIORITYGROUP_0 ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority, \
+                                                         4 bits for subpriority */
+#define NVIC_PRIORITYGROUP_1 ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority, \
+                                                         3 bits for subpriority */
+#define NVIC_PRIORITYGROUP_2 ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority, \
+                                                         2 bits for subpriority */
+#define NVIC_PRIORITYGROUP_3 ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority, \
+                                                         1 bit  for subpriority */
+#define NVIC_PRIORITYGROUP_4 ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority, \
+                                                         0 bit  for subpriority */
 #endif
-/* USER CODE BEGIN Private defines */
+  /* USER CODE BEGIN Private defines */
 
-/* USER CODE END Private defines */
+  /* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }

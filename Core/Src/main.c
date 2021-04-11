@@ -21,9 +21,8 @@
 #include "main.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-uint16_t arr, rc, psc, cnt;
-bool ns;
-uint16_t nv = 1;
+uint16_t autoreload, repeat, prescale;
+bool new_state, processed;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,6 +104,7 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
+  /*Array with value of matrix parameters*/
 Pair array[] = {
 {0, 0},
 {10, 1},
@@ -141,8 +141,7 @@ Pair array[] = {
 {60, 0},
 {46000, 1}
 };
-  Buff buff= {&array[0], SIZE};
-  
+  Buff buff= {&array[0], SIZE};/*example for make code more simplify*/
   LL_TIM_EnableCounter(TIM1);
   /* USER CODE END 2 */
 
@@ -151,6 +150,11 @@ Pair array[] = {
   while (1)
   {
     /* USER CODE END WHILE */
+    /*the previous value is processed*/
+    if(processed){
+      buff.getTIM();/*read next value at variable for most speed of sensitive*/
+      processed = false;
+    }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
