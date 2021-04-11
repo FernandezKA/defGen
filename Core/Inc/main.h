@@ -38,14 +38,40 @@ extern "C" {
 #include "stm32f1xx_ll_dma.h"
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_gpio.h"
-
+#include<stdint.h>
+#define SIZE 64
 #if defined(USE_FULL_ASSERT)
 #include "stm32_assert.h"
 #endif /* USE_FULL_ASSERT */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+  struct Pair{
+    uint32_t time;
+    bool state;
+  };
+  class Buff{
+  private:
+    Pair array[SIZE];
+    uint32_t counter;
+    uint16_t ARR;/*autoreload*/
+    uint16_t RR;/*repetition register*/
+    uint16_t PR;/*prescaler*/
+  public:
+inline explicit Buff(const Pair& pair){
+      counter = 0x00U;
+      array[counter] = pair;
+    }
+inline void addPair(const Pair& pair){
+  array[counter++] = pair;
+}
+inline uint32_t getSize(void) const{
+  return counter;
+}
+inline void getTIM(void){
+  
+}
+  };
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

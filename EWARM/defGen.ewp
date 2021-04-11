@@ -1058,9 +1058,6 @@
             <group>
                 <name>Core</name>
                 <file>
-                    <name>$PROJ_DIR$\inc.h</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\Core\Src\main.c</name>
                 </file>
                 <file>
