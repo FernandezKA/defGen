@@ -111,6 +111,7 @@ extern "C"
         ARR = 1;
         RR = 0;
         PR = 35;
+        new_state = array[countSend].state;
         ++countSend;
       }
       else if (array[countSend].time > 1 && array[countSend].time < 0xFFFF)
@@ -118,6 +119,7 @@ extern "C"
         ARR = (uint32_t)array[countSend].time;
         RR = 0;
         PR = 71;
+        new_state = array[countSend].state;
         Increment();
         //++countSend;
       }
@@ -125,6 +127,7 @@ extern "C"
       {
         ARR = 65535U;
         RR = array[countSend].time/65535;
+        new_state = array[countSend].state;
         most_value = true;
       }
     }

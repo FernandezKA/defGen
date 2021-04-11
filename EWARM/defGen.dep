@@ -97,6 +97,10 @@
             <name>$PROJ_DIR$\..\Core\Src\main.c</name>
             <outputs>
                 <tool>
+                    <name>ICCARM</name>
+                    <file> 64</file>
+                </tool>
+                <tool>
                     <name>BICOMP</name>
                     <file> 25</file>
                 </tool>
@@ -112,13 +116,17 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 73 14 30 2 29 15 72 13 19 17 74 71 4 75 10 21 28 70 7 20 8 27 76 77 22</file>
+                    <file> 75 14 20 76 70 77 21 7 8 4 10 28 27 73 13 29 19 30 17 74 2 71 15 72 22</file>
                 </tool>
             </inputs>
         </file>
         <file>
             <name>$PROJ_DIR$\..\Core\Src\stm32f1xx_it.c</name>
             <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 41</file>
+                </tool>
                 <tool>
                     <name>BICOMP</name>
                     <file> 51</file>

@@ -95,15 +95,6 @@ int main(void)
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_TIM1_Init();
-  MX_TIM2_Init();
-
-  /* Initialize interrupts */
-  MX_NVIC_Init();
-  /* USER CODE BEGIN 2 */
   /*Array with value of matrix parameters*/
 Pair array[] = {
 {0, 0},
@@ -141,7 +132,16 @@ Pair array[] = {
 {60, 0},
 {46000, 1}
 };
-  Buff buff= {&array[0], SIZE};/*example for make code more simplify*/
+  Buff buff= {&array[0], 33};/*example for make code more simplify*/
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM1_Init();
+  MX_TIM2_Init();
+
+  /* Initialize interrupts */
+  MX_NVIC_Init();
+  /* USER CODE BEGIN 2 */
+
   LL_TIM_EnableCounter(TIM1);
   /* USER CODE END 2 */
 
