@@ -21,7 +21,9 @@
 #include "main.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+uint16_t arr, rc, psc, cnt;
+bool ns;
+uint16_t nv = 1;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -103,6 +105,44 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
+Pair array[] = {
+{0, 0},
+{10, 1},
+{10375, 0},
+{10515, 1},
+{74, 0},
+{10814, 1},
+{974, 0},
+{11114, 1},
+{15, 0},
+{11524, 1},
+{705, 0},
+{91, 1},
+{11906, 0},
+{11916, 1},
+{12107, 0},
+{10, 1},
+{12308, 0},
+{20, 1},
+{12509, 0},
+{12595, 1},
+{10, 0},
+{20, 1},
+{11, 0},
+{98, 1},
+{13112, 0},
+{32, 1},
+{313, 0},
+{9, 1},
+{514, 0},
+{4, 1},
+{13715, 0},
+{14677, 1},
+{60, 0},
+{46000, 1}
+};
+  Buff buff= {&array[0], SIZE};
+  
   LL_TIM_EnableCounter(TIM1);
   /* USER CODE END 2 */
 
@@ -111,7 +151,6 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

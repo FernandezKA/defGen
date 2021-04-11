@@ -39,28 +39,38 @@ extern "C" {
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_gpio.h"
 #include<stdint.h>
-#define SIZE 64
+#define SIZE 34
 #if defined(USE_FULL_ASSERT)
 #include "stm32_assert.h"
 #endif /* USE_FULL_ASSERT */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-  struct Pair{
-    uint32_t time;
-    bool state;
+extern uint16_t arr, rc, psc, cnt;
+extern bool ns;
+extern uint16_t nv;
+struct Pair{
+        uint32_t time;
+        bool state;
   };
-  class Buff{
+class Buff{
   private:
-    Pair array[SIZE];
+    Pair array[SIZE - 1];
     uint32_t counter;
+    uint32_t countSend;
     uint16_t ARR;/*autoreload*/
     uint16_t RR;/*repetition register*/
     uint16_t PR;/*prescaler*/
   public:
-inline explicit Buff(const Pair& pair){
+inline Buff(Pair* pair, uint32_t lenght){
       counter = 0x00U;
-      array[counter] = pair;
+      countSend = 0x00U;
+      ARR = 0U;
+      RR = 0U;
+      PR = 0U;
+      for(uint32_t i = 0; i < lenght - 1; ++i){
+        array[i] = pair[i];
+      }
     }
 inline void addPair(const Pair& pair){
   array[counter++] = pair;
@@ -68,10 +78,27 @@ inline void addPair(const Pair& pair){
 inline uint32_t getSize(void) const{
   return counter;
 }
-inline void getTIM(void){
-  
+inline void getTIM(const uint32_t& count){
+  if(array[count].time < 2){
+    ARR = 1;
+    RR = 0; 
+    PR = 35;
+  }
+  else if(array[count].time > 1 && array[count].time < 0xFFFF){
+    ARR =(uint32_t) array[count].time;
+    RR = 0; 
+    PR = 71;
+  }
+  else {
+    asm("nop");/*unused option for testing*/
+  }
+}
+inline bool getValue(void) const {
+  return array[counter].state;
 }
   };
+
+extern Buff buff;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

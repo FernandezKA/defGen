@@ -205,7 +205,15 @@ void SysTick_Handler(void)
 void TIM1_UP_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_UP_IRQn 0 */
-  LL_GPIO_TogglePin(GPIOA, Out_Pin);
+  /*update value for next pair*/
+  nv = nv+1;
+  TIM1->ARR = nv;//arr;
+  TIM1->RCR = 0;//rc;
+  TIM1->PSC = 71;//psc;
+  GPIOA->ODR=(ns<<8);
+  if(ns) ns = false;
+  else ns = true;
+  /*LL_GPIO_TogglePin(GPIOA, Out_Pin);*/
   LL_TIM_ClearFlag_UPDATE(TIM1);
   /* USER CODE END TIM1_UP_IRQn 0 */
   /* USER CODE BEGIN TIM1_UP_IRQn 1 */
