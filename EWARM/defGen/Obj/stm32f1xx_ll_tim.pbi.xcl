@@ -356,6 +356,7 @@ C:\dev\MCU\defGen\Drivers\CMSIS\Include
 -DVDD_VALUE=3300
 -DPREFETCH_ENABLE=1
 -DSTM32F103xB=1
+-D__AS_BOUNDS__=1
 -D_DLIB_CONFIG_FILE_HEADER_NAME="C:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 8.1\\arm\\inc\\c\\DLib_Config_Full.h"
 -D_DLIB_CONFIG_FILE_STRING="C:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 8.1\\arm\\inc\\c\\DLib_Config_Full.h"
 -D__VERSION__="IAR ANSI C/C++ Compiler V8.30.1.114/W32 for ARM"

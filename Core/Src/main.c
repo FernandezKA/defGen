@@ -19,6 +19,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <map>
+#include <vector>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 uint16_t autoreload, repeat, prescale;
@@ -97,11 +99,11 @@ int main(void)
   /* USER CODE END SysInit */
   /*Array with value of matrix parameters*/
 Pair array[] = {
-{0, 0},
+{5, 0},
 {10, 1},
-{10375, 0},
-{10515, 1},
-{74, 0},
+{5, 0},
+{15, 1},
+{61, 0},
 {10814, 1},
 {974, 0},
 {11114, 1},
@@ -132,7 +134,12 @@ Pair array[] = {
 {60, 0},
 {46000, 1}
 };
-  Buff buff= {&array[0], 33};/*example for make code more simplify*/
+  //Pair array[] = {{3, 1}, {5, 0}, {9, 1}};
+Buff buff;
+for(int i = 0; i< 10; ++i){
+  buff.addPair(array[i]);
+}
+
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
@@ -153,6 +160,7 @@ Pair array[] = {
     /*the previous value is processed*/
     if(processed){
       buff.getTIM();/*read next value at variable for most speed of sensitive*/
+      buff.getResult();
       processed = false;
     }
     /* USER CODE BEGIN 3 */

@@ -72,10 +72,10 @@ extern "C"
         ++countSend;
       }
       else{
-        countSend = 0x04U;
+        countSend = 0x00U;
     }
     }
-    inline Buff(Pair *pair, uint32_t new_lenght)
+    inline Buff(void)
     {
       lenght = 0x00U;
       countSend = 0x00U;
@@ -83,11 +83,7 @@ extern "C"
       ARR = 0x00U;
       RR = 0x00U;
       PR = 0x00U;
-      for (uint32_t i = 0U; i < lenght - 1U; ++i)
-      {
-        array[i] = pair[i];
-      }
-      lenght = new_lenght;
+      //lenght = new_lenght;
     }
     inline void addPair(const Pair &pair)
     {
@@ -131,6 +127,11 @@ extern "C"
         most_value = true;
       }
     }
+        inline void getResult(void){
+        autoreload = ARR;
+        repeat = RR;
+        prescale = PR;
+      }
   };
 
   extern Buff buff;
