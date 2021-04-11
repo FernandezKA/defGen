@@ -115,6 +115,10 @@
                     <name>ICCARM</name>
                     <file> 45 59 68 63 75 64 72 66 60 70 65 61 71 73 76</file>
                 </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 76 59 64 70 71 73 45 68 63 75 61 60 72 65 66</file>
+                </tool>
             </inputs>
         </file>
         <file>
@@ -138,6 +142,10 @@
                     <name>ICCARM</name>
                     <file> 46 59 68 63 75 64 72 66 60 70 65 61 71 73 76 74</file>
                 </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 68 71 64 59 73 75 70 74 63 46 76 61 60 72 65 66</file>
+                </tool>
             </inputs>
         </file>
         <file>
@@ -160,6 +168,10 @@
                 <tool>
                     <name>ICCARM</name>
                     <file> 52 59 68 63 75 64 72 66 60 70 65 61 71 73 76 74</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 71 59 64 68 73 75 70 74 63 52 76 61 60 72 65 66</file>
                 </tool>
             </inputs>
         </file>
@@ -203,6 +215,10 @@
                     <name>ICCARM</name>
                     <file> 62 59 68 63 75 64 72 66 60 70 65 61 71 73 76 47 77</file>
                 </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 63 77 68 75 64 70 71 73 47 59 76 61 60 72 62 65 66</file>
+                </tool>
             </inputs>
         </file>
         <file>
@@ -226,6 +242,10 @@
                     <name>ICCARM</name>
                     <file> 62 59 68 63 75 64 72 66 60 70 65 61 71 73 76</file>
                 </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 59 76 64 70 71 73 62 68 63 75 61 60 72 65 66</file>
+                </tool>
             </inputs>
         </file>
         <file>
@@ -248,6 +268,10 @@
                 <tool>
                     <name>ICCARM</name>
                     <file> 53 59 68 63 75 64 72 66 60 70 65 61 71 73 76 74</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 59 68 76 72 74 53 63 75 61 66 73 65 64 60 70 71</file>
                 </tool>
             </inputs>
         </file>
@@ -310,7 +334,7 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 59 75 60 49 62 53 77 46 63 65 64 70 71 56 74 45 47 52 48 68 76 61 72 66 73 69</file>
+                    <file> 59 48 66 74 73 47 61 45 52 68 76 72 56 62 77 49 46 53 63 75 65 64 60 70 71 69</file>
                 </tool>
             </inputs>
         </file>
@@ -362,50 +386,11 @@
                     <name>ICCARM</name>
                     <file> 48 59 68 63 75 64 72 66 60 70 65 61 71 73 76 74</file>
                 </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 71 64 73 63 70 74 68 75 48 59 76 61 60 72 65 66</file>
+                </tool>
             </inputs>
         </file>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_exti.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_pwr.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_dma.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_utils.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_rcc.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_tim.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Core\Src\main.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Core\Src\stm32f1xx_it.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Core\Src\system_stm32f1xx.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>$PROJ_DIR$\..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_gpio.c</name>
-            <tool>ICCARM</tool>
-        </forcedrebuild>
-        <forcedrebuild>
-            <name>[REBUILD_ALL]</name>
-        </forcedrebuild>
     </configuration>
 </project>

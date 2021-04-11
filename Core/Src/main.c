@@ -103,7 +103,7 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-
+  LL_TIM_EnableCounter(TIM1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -200,6 +200,7 @@ static void MX_TIM1_Init(void)
   LL_TIM_SetClockSource(TIM1, LL_TIM_CLOCKSOURCE_INTERNAL);
   LL_TIM_SetTriggerOutput(TIM1, LL_TIM_TRGO_RESET);
   LL_TIM_DisableMasterSlaveMode(TIM1);
+  LL_TIM_EnableIT_UPDATE(TIM1);
   /* USER CODE BEGIN TIM1_Init 2 */
 
   /* USER CODE END TIM1_Init 2 */
