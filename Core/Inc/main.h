@@ -1,24 +1,3 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
 #define __MAIN_H
@@ -48,7 +27,8 @@ extern "C"
   /* Private includes ----------------------------------------------------------*/
   /* USER CODE BEGIN Includes */
   extern uint16_t autoreload, repeat, prescale;
-  extern bool new_state, processed;
+  extern bool new_state;
+  extern bool processed;
   struct Pair
   {
     uint32_t time;
@@ -80,9 +60,9 @@ extern "C"
       lenght = 0x00U;
       countSend = 0x00U;
       part_of_val = 0x00U;
-      ARR = 0x00U;
+      ARR = 0x01U;
       RR = 0x00U;
-      PR = 0x00U;
+      PR = 71U;
       //lenght = new_lenght;
     }
     inline void addPair(const Pair &pair)
@@ -93,7 +73,7 @@ extern "C"
     {
       if (most_value)
       {
-        ARR = (array[countSend].time)%65535U;
+        ARR = ((array[countSend].time)%65535U) - 1U;
         most_value = false;
         Increment();
         //++countSend;
@@ -110,14 +90,13 @@ extern "C"
         new_state = array[countSend].state;
         ++countSend;
       }
-      else if (array[countSend].time > 1 && array[countSend].time < 0xFFFF)
+      else if (array[countSend].time > 1 && array[countSend].time < 65535U)
       {
-        ARR = (uint32_t)array[countSend].time;
+        ARR = (uint32_t)array[countSend].time - 1U;
         RR = 0;
         PR = 71;
         new_state = array[countSend].state;
         Increment();
-        //++countSend;
       }
       else
       {
@@ -135,30 +114,9 @@ extern "C"
   };
 
   extern Buff buff;
-  /* USER CODE END Includes */
-
-  /* Exported types ------------------------------------------------------------*/
-  /* USER CODE BEGIN ET */
-
-  /* USER CODE END ET */
-
-  /* Exported constants --------------------------------------------------------*/
-  /* USER CODE BEGIN EC */
-
-  /* USER CODE END EC */
-
-  /* Exported macro ------------------------------------------------------------*/
-  /* USER CODE BEGIN EM */
-
-  /* USER CODE END EM */
-
   /* Exported functions prototypes ---------------------------------------------*/
   void Error_Handler(void);
-
-/* USER CODE BEGIN EFP */
-
-/* USER CODE END EFP */
-
+  
 /* Private defines -----------------------------------------------------------*/
 #define Led_Pin LL_GPIO_PIN_13
 #define Led_GPIO_Port GPIOC

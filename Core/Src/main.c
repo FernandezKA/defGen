@@ -24,7 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 uint16_t autoreload, repeat, prescale;
-bool new_state, processed;
+bool new_state; 
+bool processed;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -98,7 +99,7 @@ int main(void)
 
   /* USER CODE END SysInit */
   /*Array with value of matrix parameters*/
-Pair array[] = {
+/*Pair array[] = {
 {5, 0},
 {10, 1},
 {5, 0},
@@ -133,10 +134,12 @@ Pair array[] = {
 {14677, 1},
 {60, 0},
 {46000, 1}
-};
-  //Pair array[] = {{3, 1}, {5, 0}, {9, 1}};
+};*/
+autoreload = 0x01U;
+prescale = 71U;
+Pair array[] = {{5, 1}, {100, 0}, {5, 1}, {8, 0}};
 Buff buff;
-for(int i = 0; i< 10; ++i){
+for(int i = 0; i< 4; ++i){
   buff.addPair(array[i]);
 }
 
