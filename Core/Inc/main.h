@@ -26,24 +26,32 @@ extern "C"
 
   /* Private includes ----------------------------------------------------------*/
   /* USER CODE BEGIN Includes */
-  extern uint16_t autoreload, repeat, prescale;
-  extern bool new_state;
-  extern bool processed;
-  struct Pair
+    struct Pair
   {
     uint32_t time;
     bool state;
   };
-  class Buff
+  extern Pair array[SIZE - 1];
+  extern uint32_t lenght;
+  extern uint32_t countSend;
+  extern uint16_t ARR; /*autoreload*/
+  extern uint16_t RR;  /*repetition register*/
+  extern uint16_t PR;  /*prescaler*/
+  extern uint16_t autoreload, repeat, prescale;
+  extern bool new_state;
+  extern bool processed;
+  extern bool most_value;
+extern void Init(const uint32_t& new_lenght);
+extern void getTIM(void);
+ /* class Buff
   {
   private:
     Pair array[SIZE - 1];
     uint32_t lenght;
     uint32_t countSend;
-    uint16_t ARR; /*autoreload*/
-    uint16_t RR;  /*repetition register*/
-    uint16_t PR;  /*prescaler*/
-    bool most_value = false;
+    uint16_t ARR; 
+    uint16_t RR;
+    uint16_t PR;
     uint16_t part_of_val;
 
   public:
@@ -71,49 +79,57 @@ extern "C"
     }
     inline void getTIM(void)
     {
-      if (most_value)
-      {
-        ARR = ((array[countSend].time)%65535U) - 1U;
-        most_value = false;
-        Increment();
-        //++countSend;
-      }
       if (array[countSend].time < 2)
       {
         if(array[countSend].time == 0x00U){
+          processed = false;
           Increment();
-          //++countSend;
         }
-        ARR = 1;
-        RR = 0;
-        PR = 35;
+        autoreload = 1;
+        repeat = 0;
+        prescale = 35;
         new_state = array[countSend].state;
-        ++countSend;
+        processed = false;
       }
       else if (array[countSend].time > 1 && array[countSend].time < 65535U)
       {
-        ARR = (uint32_t)array[countSend].time - 1U;
-        RR = 0;
-        PR = 71;
-        new_state = array[countSend].state;
-        Increment();
-      }
-      else
-      {
-        ARR = 65535U;
-        RR = array[countSend].time/65535;
+        autoreload = (uint32_t)array[countSend].time - 1U;
+        repeat = 0;
+        prescale = 71;
         new_state = array[countSend].state;
         most_value = true;
+        processed = false;
+        Increment();
+      }
+      else if((array[countSend].time > 0xFFFFU)&&(!most_value))
+
+      {
+        autoreload = 0xFFFFU;
+        repeat = array[countSend].time/65535U;
+        prescale = 71U;
+        new_state = array[countSend].state;
+        processed = false;
+        most_value = true;
+      }
+    else if (array[countSend].time > 0xFFFFU&&most_value)
+      {
+        //ARR = array[countSend].time%0xFFFFU;;
+        //RR = 0x00U;
+        //ARR = ((array[countSend].time)%65535U) - 1U;
+        //Increment();
+        //++countSend;
+        //asm("nop");
+        autoreload = array[countSend].time%0xFFFFU;
+        prescale = 71U;
+        repeat = 0x00U;
+        processed = false;
+        most_value = false;
+        Increment();
       }
     }
-        inline void getResult(void){
-        autoreload = ARR;
-        repeat = RR;
-        prescale = PR;
-      }
   };
 
-  extern Buff buff;
+  extern Buff buff;*/
   /* Exported functions prototypes ---------------------------------------------*/
   void Error_Handler(void);
   

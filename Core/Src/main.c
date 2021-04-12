@@ -1,85 +1,36 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <map>
-#include <vector>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-uint16_t autoreload, repeat, prescale;
-bool new_state; 
-bool processed;
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
+//Pair array[SIZE - 1];
+uint32_t lenght;
+uint32_t countSend;
+uint16_t ARR; /*autoreload*/
+uint16_t RR;  /*repetition register*/
+uint16_t PR;  /*prescaler*/
+uint16_t autoreload; /*variable for transmit new state into IRQ*/
+uint16_t repeat;
+uint16_t prescale;
+bool new_state;
+bool processed;  /*flag for state of loading new data into TIM1*/
+bool most_value; /*flag for indicate overflow size of CNT at TIM1*/
+Pair array[] = {{7000, 1}, {8000, 0}, {9000, 1}, {10000, 0}};
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_NVIC_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
+/******************************************************************************/
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-
+  Init(4U);
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   /* System interrupt init*/
@@ -88,17 +39,11 @@ int main(void)
   */
   LL_GPIO_AF_Remap_SWJ_NOJTAG();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
+    
   /*Array with value of matrix parameters*/
-/*Pair array[] = {
+  /*Pair array[] = {
 {1, 0},
 {10, 1},
 {5, 0},
@@ -134,13 +79,11 @@ int main(void)
 {60, 0},
 {46000, 1}
 };*/
-autoreload = 0x01U;
-prescale = 71U;
-Pair array[] = {{70000, 1}, {70000, 0}, {70000, 1}, {70000, 0}};
-Buff buff;
-for(int i = 0; i< 4; ++i){
-  buff.addPair(array[i]);
-}
+  
+  //Buff buff;
+  /*for(int i = 0; i< 4; ++i){
+      array[i++] = pair;
+}*/
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -158,12 +101,16 @@ for(int i = 0; i< 4; ++i){
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    LL_GPIO_TogglePin(GPIOC, Led_Pin);
     /* USER CODE END WHILE */
     /*the previous value is processed*/
-    if(processed){
-      buff.getTIM();/*read next value at variable for most speed of sensitive*/
-      buff.getResult();
+    if (processed)
+    {
+      //LL_TIM_DisableIT_UPDATE(TIM1);
+      getTIM(); /*read next value at variable for most speed of sensitive*/
       processed = false;
+      //LL_TIM_EnableIT_UPDATE(TIM1);
+      //buff.getResult();
     }
     /* USER CODE BEGIN 3 */
   }
@@ -177,33 +124,30 @@ for(int i = 0; i< 4; ++i){
 void SystemClock_Config(void)
 {
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_2)
+  while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_2)
   {
   }
   LL_RCC_HSE_Enable();
 
-   /* Wait till HSE is ready */
-  while(LL_RCC_HSE_IsReady() != 1)
+  /* Wait till HSE is ready */
+  while (LL_RCC_HSE_IsReady() != 1)
   {
-
   }
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_9);
   LL_RCC_PLL_Enable();
 
-   /* Wait till PLL is ready */
-  while(LL_RCC_PLL_IsReady() != 1)
+  /* Wait till PLL is ready */
+  while (LL_RCC_PLL_IsReady() != 1)
   {
-
   }
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
-   /* Wait till System clock is ready */
-  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  /* Wait till System clock is ready */
+  while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
   {
-
   }
   LL_Init1msTick(72000000);
   LL_SetSystemCoreClock(72000000);
@@ -216,10 +160,10 @@ void SystemClock_Config(void)
 static void MX_NVIC_Init(void)
 {
   /* TIM1_UP_IRQn interrupt configuration */
-  NVIC_SetPriority(TIM1_UP_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_SetPriority(TIM1_UP_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
   NVIC_EnableIRQ(TIM1_UP_IRQn);
   /* TIM2_IRQn interrupt configuration */
-  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
   NVIC_EnableIRQ(TIM2_IRQn);
 }
 
@@ -257,7 +201,6 @@ static void MX_TIM1_Init(void)
   /* USER CODE BEGIN TIM1_Init 2 */
 
   /* USER CODE END TIM1_Init 2 */
-
 }
 
 /**
@@ -292,7 +235,6 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
-
 }
 
 /**
@@ -328,7 +270,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   LL_GPIO_Init(Out_GPIO_Port, &GPIO_InitStruct);
-
 }
 
 /* USER CODE BEGIN 4 */
@@ -350,7 +291,7 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
