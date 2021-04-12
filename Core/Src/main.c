@@ -14,36 +14,7 @@ uint16_t prescale;
 bool new_state;
 bool processed;  /*flag for state of loading new data into TIM1*/
 bool most_value; /*flag for indicate overflow size of CNT at TIM1*/
-Pair array[] = {{7000, 1}, {8000, 0}, {9000, 1}, {10000, 0}};
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_TIM1_Init(void);
-static void MX_TIM2_Init(void);
-static void MX_NVIC_Init(void);
-/******************************************************************************/
-int main(void)
-{
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-  Init(4U);
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
-  /* System interrupt init*/
-
-  /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
-  */
-  LL_GPIO_AF_Remap_SWJ_NOJTAG();
-
-  /* Configure the system clock */
-  SystemClock_Config();
-    
-  /*Array with value of matrix parameters*/
-  /*Pair array[] = {
+Pair array[] = {
 {1, 0},
 {10, 1},
 {5, 0},
@@ -61,8 +32,8 @@ int main(void)
 {12107, 0},
 {10, 1},
 {12308, 0},
-{20, 1},
-{12509, 0},
+{20, 1}};
+/*{12509, 0},
 {12595, 1},
 {10, 0},
 {20, 1},
@@ -77,8 +48,37 @@ int main(void)
 {13715, 0},
 {14677, 1},
 {60, 0},
-{46000, 1}
-};*/
+{46000, 1}};
+/*Pair array[] = { {8000, 0}, {9000, 1}, {10000, 0}, {1000000, 1}};*/
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_TIM1_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_NVIC_Init(void);
+/******************************************************************************/
+int main(void)
+{
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+  Init(34U, array[0]);
+  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+  /* System interrupt init*/
+
+  /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
+  */
+  LL_GPIO_AF_Remap_SWJ_NOJTAG();
+
+  /* Configure the system clock */
+  SystemClock_Config();
+    
+  /*Array with value of matrix parameters*/
+
   
   //Buff buff;
   /*for(int i = 0; i< 4; ++i){
@@ -101,7 +101,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    LL_GPIO_TogglePin(GPIOC, Led_Pin);
+    //LL_GPIO_TogglePin(GPIOC, Led_Pin);
+    GPIOC->ODR^=(1U<<13);
     /* USER CODE END WHILE */
     /*the previous value is processed*/
     if (processed)

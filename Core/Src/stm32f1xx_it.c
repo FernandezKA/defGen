@@ -208,8 +208,7 @@ void TIM1_UP_IRQHandler(void)
   TIM1->ARR = autoreload;
   TIM1->RCR = repeat;
   TIM1->PSC = prescale;
-  GPIOA->ODR ^= (1 << 8);
-  //most_value = false;
+  GPIOA->ODR = (~(new_state) << 8);
   processed = true;
   LL_TIM_ClearFlag_UPDATE(TIM1);
 }

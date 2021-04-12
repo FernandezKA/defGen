@@ -7,11 +7,12 @@ inline void Increment(void){
         countSend = 0x00U;
     }
     }
-void Init(const uint32_t& new_lenght)
+void Init(const uint32_t& new_lenght, const Pair& pair)
     {
       lenght = new_lenght;
       countSend = 0x00U;
-      autoreload = 0x01U;
+      autoreload = pair.time;
+      new_state = pair.state;
       repeat = 0x00U;
       prescale = 71U;
     }

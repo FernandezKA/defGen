@@ -12,12 +12,12 @@
         <ByteLimit>50</ByteLimit>
     </Stack>
     <StLinkDriver>
-        <CStepIntDis>_ 0</CStepIntDis>
-        <LeaveTargetRunning>_ 0</LeaveTargetRunning>
-        <stlinkResetStyle>0</stlinkResetStyle>
-        <stlinkResetStrategy>1</stlinkResetStrategy>
         <stlinkserialNo>4</stlinkserialNo>
         <stlinkfoundProbes />
+        <stlinkResetStyle>0</stlinkResetStyle>
+        <stlinkResetStrategy>1</stlinkResetStrategy>
+        <CStepIntDis>_ 0</CStepIntDis>
+        <LeaveTargetRunning>_ 0</LeaveTargetRunning>
     </StLinkDriver>
     <Exceptions>
         <StopOnUncaught>_ 0</StopOnUncaught>
@@ -42,7 +42,7 @@
         <ITMlogFile>$PROJ_DIR$\ITM.log</ITMlogFile>
     </SWOTraceHWSettings>
     <DebugChecksum>
-        <Checksum>540258632</Checksum>
+        <Checksum>420175177</Checksum>
     </DebugChecksum>
     <CodeCoverage>
         <Enabled>_ 0</Enabled>
@@ -128,6 +128,15 @@
         <ShowTimeSum>1</ShowTimeSum>
         <SumSortOrder>0</SumSortOrder>
     </EventLog>
+    <TermIOLog>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+    </TermIOLog>
+    <LogFile>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+        <Category>_ 0</Category>
+    </LogFile>
     <DisassembleMode>
         <mode>0</mode>
     </DisassembleMode>
@@ -136,20 +145,10 @@
         <Bp1>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Core\Inc\main.h}.81.9" 0 0 1 "" 0 "" 0</Bp1>
         <Bp2>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Core\Inc\main.h}.117.9" 0 0 1 "" 0 "" 0</Bp2>
         <Bp3>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Core\Inc\main.h}.105.9" 0 0 1 "" 0 "" 0</Bp3>
-        <Bp4>_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Core\Src\main.c}.107.5" 0 0 1 "" 0 "" 0</Bp4>
-        <Count>5</Count>
+        <Count>4</Count>
     </Breakpoints2>
-    <LogFile>
-        <LoggingEnabled>_ 0</LoggingEnabled>
-        <LogFile>_ ""</LogFile>
-        <Category>_ 0</Category>
-    </LogFile>
     <Aliases>
         <Count>0</Count>
         <SuppressDialog>0</SuppressDialog>
     </Aliases>
-    <TermIOLog>
-        <LoggingEnabled>_ 0</LoggingEnabled>
-        <LogFile>_ ""</LogFile>
-    </TermIOLog>
 </settings>

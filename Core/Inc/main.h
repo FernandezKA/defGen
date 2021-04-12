@@ -41,7 +41,7 @@ extern "C"
   extern bool new_state;
   extern bool processed;
   extern bool most_value;
-extern void Init(const uint32_t& new_lenght);
+extern void Init(const uint32_t& new_lenght, const Pair& pair);
 extern void getTIM(void);
  /* class Buff
   {
