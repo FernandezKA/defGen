@@ -94,13 +94,12 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
   /*Array with value of matrix parameters*/
 /*Pair array[] = {
-{5, 0},
+{1, 0},
 {10, 1},
 {5, 0},
 {15, 1},
@@ -137,7 +136,7 @@ int main(void)
 };*/
 autoreload = 0x01U;
 prescale = 71U;
-Pair array[] = {{5, 1}, {100, 0}, {5, 1}, {8, 0}};
+Pair array[] = {{70000, 1}, {70000, 0}, {70000, 1}, {70000, 0}};
 Buff buff;
 for(int i = 0; i< 4; ++i){
   buff.addPair(array[i]);
