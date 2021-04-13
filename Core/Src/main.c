@@ -19,27 +19,90 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#define LENGHT 34
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 uint32_t new_time;
 uint32_t new_state;
 uint16_t new_repeat;
 uint16_t new_prescale;
-_Bool processed;
-_Bool repeat;
+uint8_t processed;
+uint8_t repeat;
 /****************************/
 uint16_t countSend;
-uint16_t lenght;
+//uint16_t lenght;
 /****************************/
-uint32_t array[3][2] = {{1, 2}, {1, 2}, {1, 2}};/*array for saving values*/
+uint32_t array[LENGHT][2] = {{0, 0},
+{10, 1},
+{10375, 0},
+{10515, 1},
+{74, 0},
+{10814, 1},
+{974, 0},
+{11114, 1},
+{15, 0},
+{11524, 1},
+{705, 0},
+{91, 1},
+{11906, 0},
+{11916, 1},
+{12107, 0},
+{10, 1},
+{12308, 0},
+{20, 1},
+{12509, 0},
+{12595, 1},
+{10, 0},
+{20, 1},
+{11, 0},
+{98, 1},
+{13112, 0},
+{32, 1},
+{313, 0},
+{9, 1},
+{514, 0},
+{4, 1},
+{13715, 0},
+{14677, 1},
+{60, 0},
+{46000, 1}};/*array for saving values*/
 
-static void Init(void){
+static inline void Init(void){
 	countSend = 0x00U;
-	new_time = 1;
+	new_time = 100;
 	new_state = 0x00U;
 	new_repeat = 0x00U;
 	new_prescale = 71U;
+}
+static inline void Increment(void){
+	if(countSend < LENGHT - 1){
+		++countSend;
+	}
+	else{
+		countSend = 0x00U;
+	}
+}
+static void getNext(void){
+	if(array[countSend][0] > 2 && array[countSend][0] < 0xFFFF){
+		new_state = array[countSend][1];
+		new_time = array[countSend][0] - 1;
+		new_repeat = 0x00U;
+		new_prescale = 71U;
+		Increment();
+	}
+	else if(array[countSend][0] < 2){
+		if(array[countSend][0] == 0x00U){
+			new_time = 0x01U;/*because else TIM1 is stopped*/
+			Increment();
+		}
+		new_time = array[countSend][0] - 1;
+		new_state = array[countSend][1];
+		new_prescale = 35U;
+		Increment();
+	}
+	else{
+		Increment();
+	}
 }
 /* USER CODE END Includes */
 
@@ -130,7 +193,12 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  if(processed == 0xFF){
+		  getNext();
+		  //new_time++;
+		  processed = 0x00;
+	  }
+	  GPIOC->ODR^=(1U<<13);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

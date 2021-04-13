@@ -51,9 +51,8 @@ extern uint16_t new_prescale;
 extern uint32_t new_state;
 extern uint16_t countSend;
 extern uint16_t lenght;
-extern _Bool processed;
+extern uint8_t processed;
 /* USER CODE END Includes */
-
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
