@@ -45,7 +45,13 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+extern uint32_t new_time;
+extern uint16_t new_repeat;
+extern uint16_t new_prescale;
+extern uint32_t new_state;
+extern uint16_t countSend;
+extern uint16_t lenght;
+extern _Bool processed;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

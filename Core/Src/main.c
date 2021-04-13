@@ -22,20 +22,25 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-uint32_t lenght;
-uint32_t countSend;
-uint16_t ARR; /*autoreload*/
-uint16_t RR;  /*repetition register*/
-uint16_t PR;  /*prescaler*/
-uint16_t autoreload; /*variable for transmit new state into IRQ*/
-uint16_t repeat;
-uint16_t prescale;
-
-_Bool new_state;
-_Bool processed;  /*flag for state of loading new data into TIM1*/
-_Bool most_value; /*flag for indicate overflow size of CNT at TIM1*/
+uint32_t new_time;
+uint32_t new_state;
+uint16_t new_repeat;
+uint16_t new_prescale;
+_Bool processed;
+_Bool repeat;
+/****************************/
+uint16_t countSend;
+uint16_t lenght;
+/****************************/
 uint32_t array[3][2] = {{1, 2}, {1, 2}, {1, 2}};/*array for saving values*/
 
+static void Init(void){
+	countSend = 0x00U;
+	new_time = 1;
+	new_state = 0x00U;
+	new_repeat = 0x00U;
+	new_prescale = 71U;
+}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,7 +111,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  Init();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -125,7 +130,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  GPIOC->ODR^=(1U<<13);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -236,7 +241,7 @@ static void MX_TIM2_Init(void)
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM2);
 
   /* TIM2 interrupt Init */
-  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),1, 0));
   NVIC_EnableIRQ(TIM2_IRQn);
 
   /* USER CODE BEGIN TIM2_Init 1 */
