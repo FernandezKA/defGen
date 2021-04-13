@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#define LENGHT 34
+#define LENGHT 2
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 uint32_t new_time;
@@ -32,40 +32,7 @@ uint8_t repeat;
 uint16_t countSend;
 //uint16_t lenght;
 /****************************/
-uint32_t array[LENGHT][2] = {{0, 0},
-{10, 1},
-{10375, 0},
-{10515, 1},
-{74, 0},
-{10814, 1},
-{974, 0},
-{11114, 1},
-{15, 0},
-{11524, 1},
-{705, 0},
-{91, 1},
-{11906, 0},
-{11916, 1},
-{12107, 0},
-{10, 1},
-{12308, 0},
-{20, 1},
-{12509, 0},
-{12595, 1},
-{10, 0},
-{20, 1},
-{11, 0},
-{98, 1},
-{13112, 0},
-{32, 1},
-{313, 0},
-{9, 1},
-{514, 0},
-{4, 1},
-{13715, 0},
-{14677, 1},
-{60, 0},
-{46000, 1}};/*array for saving values*/
+uint32_t array[LENGHT][2] = {{15,1},{70000,0}};/*array for saving values*/
 
 static inline void Init(void){
 	countSend = 0x00U;
@@ -95,13 +62,25 @@ static void getNext(void){
 			new_time = 0x01U;/*because else TIM1 is stopped*/
 			Increment();
 		}
+		else{
 		new_time = array[countSend][0] - 1;
 		new_state = array[countSend][1];
 		new_prescale = 35U;
 		Increment();
+		}
 	}
 	else{
-		Increment();
+		if(repeat == 0x00U){
+			repeat = 0x01U;
+			new_time = 0xFFFFU;
+			new_repeat = (array[countSend][0])/0xFFFFU;
+		}
+		else{
+			new_repeat = 0x00U;
+			new_time = (array[countSend][0])%0xFFFFU;
+			repeat = 0x00U;
+			Increment();
+		}
 	}
 }
 /* USER CODE END Includes */
