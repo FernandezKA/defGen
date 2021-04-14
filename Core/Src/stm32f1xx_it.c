@@ -203,8 +203,7 @@ void SysTick_Handler(void)
   */
 void TIM1_UP_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM1_UP_IRQn 0 */
-	if(new_state == 0x01U){
+	if(new_state == 0x01U){/*set new state*/
 		GPIOA->ODR = (1U<<8);
 	}
 	else{
@@ -215,10 +214,6 @@ void TIM1_UP_IRQHandler(void)
 	TIM1->PSC = new_prescale;
 	processed = 0xFF;
 	LL_TIM_ClearFlag_UPDATE(TIM1);
-  /* USER CODE END TIM1_UP_IRQn 0 */
-  /* USER CODE BEGIN TIM1_UP_IRQn 1 */
-
-  /* USER CODE END TIM1_UP_IRQn 1 */
 }
 
 /**

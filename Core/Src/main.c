@@ -36,7 +36,7 @@ uint32_t array[LENGHT][2] = {{15,1},{70000,0}};/*array for saving values*/
 
 static inline void Init(void){
 	countSend = 0x00U;
-	new_time = 100;
+	new_time = 1;
 	new_state = 0x00U;
 	new_repeat = 0x00U;
 	new_prescale = 71U;
@@ -50,20 +50,19 @@ static inline void Increment(void){
 	}
 }
 static void getNext(void){
-	if(array[countSend][0] > 2 && array[countSend][0] < 0xFFFF){
+	if(array[countSend][0] > 0x02U && array[countSend][0] < 0xFFFFU){
 		new_state = array[countSend][1];
-		new_time = array[countSend][0] - 1;
+		new_time = array[countSend][0] - 1U;
 		new_repeat = 0x00U;
 		new_prescale = 71U;
 		Increment();
 	}
-	else if(array[countSend][0] < 2){
+	else if(array[countSend][0] < 2U){
 		if(array[countSend][0] == 0x00U){
-			new_time = 0x01U;/*because else TIM1 is stopped*/
-			Increment();
+			Increment();/*skip this value as invalid*/
 		}
 		else{
-		new_time = array[countSend][0] - 1;
+		new_time = array[countSend][0] - 1U;
 		new_state = array[countSend][1];
 		new_prescale = 35U;
 		Increment();
@@ -72,38 +71,18 @@ static void getNext(void){
 	else{
 		if(repeat == 0x00U){
 			repeat = 0x01U;
-			new_time = 0xFFFFU;
-			new_repeat = (array[countSend][0])/0xFFFFU;
+			new_time = 0xFFFFU - 1U;/*set maximal value of time for repeat*/
+			new_repeat = (array[countSend][0])/0xFFFFU - 1U;/*set nums without mantissa */
+			new_prescale = 71U;/*prescale for minimal precision*/
 		}
 		else{
 			new_repeat = 0x00U;
-			new_time = (array[countSend][0])%0xFFFFU;
+			new_time = (array[countSend][0])%0xFFFFU - 1U;
 			repeat = 0x00U;
 			Increment();
 		}
 	}
 }
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -111,27 +90,9 @@ static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_NVIC_Init(void);
-/* USER CODE BEGIN PFP */
 
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
@@ -174,11 +135,9 @@ int main(void)
     /* USER CODE END WHILE */
 	  if(processed == 0xFF){
 		  getNext();
-		  //new_time++;
 		  processed = 0x00;
 	  }
 	  GPIOC->ODR^=(1U<<13);
-    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
