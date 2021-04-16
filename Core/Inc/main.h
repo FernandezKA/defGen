@@ -38,7 +38,7 @@ extern "C" {
 #include "stm32f1xx_ll_dma.h"
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_gpio.h"
-
+#include<stdbool.h>
 #if defined(USE_FULL_ASSERT)
 #include "stm32_assert.h"
 #endif /* USE_FULL_ASSERT */
@@ -51,7 +51,7 @@ extern uint16_t new_prescale;
 extern uint32_t new_state;
 extern uint16_t countSend;
 extern uint16_t lenght;
-extern uint8_t processed;
+extern _Bool processed;
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);

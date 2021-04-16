@@ -26,8 +26,8 @@ uint32_t new_time;
 uint32_t new_state;
 uint16_t new_repeat;
 uint16_t new_prescale;
-uint8_t processed;
-uint8_t repeat;
+_Bool processed;
+_Bool repeat;
 /****************************/
 uint16_t countSend;
 //uint16_t lenght;
@@ -69,16 +69,17 @@ static void getNext(void){
 		}
 	}
 	else{
-		if(repeat == 0x00U){
-			repeat = 0x01U;
-			new_time = 0xFFFFU - 1U;/*set maximal value of time for repeat*/
-			new_repeat = (array[countSend][0])/0xFFFFU - 1U;/*set nums without mantissa */
-			new_prescale = 71U;/*prescale for minimal precision*/
+		if(!repeat){
+			repeat = true;
+			new_time = array[countSend][0]/0xFFFFU;
+			new_prescale = 71U;
+			new_state = array[countSend][1];
 		}
 		else{
-			new_repeat = 0x00U;
-			new_time = (array[countSend][0])%0xFFFFU - 1U;
-			repeat = 0x00U;
+			repeat = false;
+			new_time = array[countSend][0]%0xFFFFU;
+			new_prescale = 71U;
+			new_state = array[countSend][1];
 			Increment();
 		}
 	}
@@ -133,7 +134,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  if(processed == 0xFF){
+	  if(processed){
 		  getNext();
 		  processed = 0x00;
 	  }

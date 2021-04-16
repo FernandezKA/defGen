@@ -212,7 +212,7 @@ void TIM1_UP_IRQHandler(void)
 	TIM1->ARR = new_time;
 	TIM1->RCR = new_repeat;
 	TIM1->PSC = new_prescale;
-	processed = 0xFF;
+	processed = true;
 	LL_TIM_ClearFlag_UPDATE(TIM1);
 }
 
@@ -221,15 +221,7 @@ void TIM1_UP_IRQHandler(void)
   */
 void TIM2_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM2_IRQn 0 */
-
-  /* USER CODE END TIM2_IRQn 0 */
-  /* USER CODE BEGIN TIM2_IRQn 1 */
-
-  /* USER CODE END TIM2_IRQn 1 */
+/*NOTE: ADD INDICATE WORKING*/
 }
 
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
