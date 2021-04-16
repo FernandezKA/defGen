@@ -22,17 +22,17 @@
 #define LENGHT 2
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-uint32_t new_time;
-uint32_t new_state;
-uint16_t new_repeat;
-uint16_t new_prescale;
-_Bool processed;
+volatile uint16_t new_time;
+volatile uint16_t new_state;
+volatile uint16_t new_repeat;
+volatile uint16_t new_prescale;
+volatile _Bool processed;
 _Bool repeat;
 /****************************/
-uint16_t countSend;
+volatile uint16_t countSend;
 //uint16_t lenght;
 /****************************/
-uint32_t array[LENGHT][2] = {{1,1},{1,0}};/*array for saving values*/
+uint32_t array[LENGHT][2] = {{4,1},{4,0}};/*array for saving values*/
 
 static inline void Init(void){
 	countSend = 0x00U;
@@ -49,39 +49,41 @@ static inline void Increment(void){
 		countSend = 0x00U;
 	}
 }
-static void getNext(void){
-	if(array[countSend][0] > 0x02U && array[countSend][0] < 0xFFFFU){
-		new_state = array[countSend][1];
-		new_time = array[countSend][0] - 1U;
-		new_repeat = 0x00U;
-		new_prescale = 71U;
-		Increment();
-	}
-	else if(array[countSend][0] < 2U){
-		if(array[countSend][0] == 0x00U){
+static inline void getNext(void){
+	uint32_t temp = array[countSend][0];
+	uint16_t state = (uint32_t) array[countSend][1];
+	if(/*array[countSend][0]*/temp <= 2U){
+		if(/*array[countSend][0]*/temp == 0x00U){
 			Increment();/*skip this value as invalid*/
 		}
 		else{
-		new_time = array[countSend][0] - 1U;
-		new_state = array[countSend][1];
+		new_time = /*array[countSend][0]*/temp - 1U;
+		new_state = state;//array[countSend][1];
 		new_prescale = 35U;
 		Increment();
 		}
+	}
+	else if(/*array[countSend][0]*/temp > 0x02U && /*array[countSend][0]*/temp < 0xFFFFU){
+		new_state = state;//array[countSend][1];
+		new_time = /*array[countSend][0]*/temp - 1U;
+		new_repeat = 0x00U;
+		new_prescale = 71U;
+		Increment();
 	}
 	else{
 		if(!repeat){
 			repeat = true;
 			new_time = (0xFFFFU) - 1;
-			new_repeat = (array[countSend][0]/0xFFFFU) - 1U;
+			new_repeat = (/*array[countSend][0]*/temp/0xFFFFU) - 1U;
 			new_prescale = 71U;
-			new_state = array[countSend][1];
+			new_state = state;//array[countSend][1];
 		}
 		else{
 			repeat = false;
-			new_time = (array[countSend][0]%0xFFFFU) - 1U;
+			new_time = (/*array[countSend][0]*/temp%0xFFFFU) - 1U;
 			new_repeat = 0x00U;
 			new_prescale = 71U;
-			new_state = array[countSend][1];
+			new_state = state;//array[countSend][1];
 			Increment();
 		}
 	}
@@ -138,7 +140,7 @@ int main(void)
     /* USER CODE END WHILE */
 	  if(processed){
 		  getNext();
-		  processed = 0x00;
+		  processed = false;
 	  }
 	  GPIOC->ODR^=(1U<<13);
   }

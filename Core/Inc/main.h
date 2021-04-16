@@ -45,13 +45,13 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-extern uint32_t new_time;
-extern uint16_t new_repeat;
-extern uint16_t new_prescale;
-extern uint32_t new_state;
-extern uint16_t countSend;
-extern uint16_t lenght;
-extern _Bool processed;
+extern volatile uint16_t new_time;
+extern volatile uint16_t new_repeat;
+extern volatile uint16_t new_prescale;
+extern volatile uint16_t new_state;
+extern volatile uint16_t countSend;
+extern volatile uint16_t lenght;
+extern volatile _Bool processed;
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
