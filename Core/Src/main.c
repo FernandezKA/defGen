@@ -32,7 +32,7 @@ _Bool repeat;
 uint16_t countSend;
 //uint16_t lenght;
 /****************************/
-uint32_t array[LENGHT][2] = {{15,1},{70000,0}};/*array for saving values*/
+uint32_t array[LENGHT][2] = {{1,1},{1,0}};/*array for saving values*/
 
 static inline void Init(void){
 	countSend = 0x00U;
@@ -71,13 +71,15 @@ static void getNext(void){
 	else{
 		if(!repeat){
 			repeat = true;
-			new_time = array[countSend][0]/0xFFFFU;
+			new_time = (0xFFFFU) - 1;
+			new_repeat = (array[countSend][0]/0xFFFFU) - 1U;
 			new_prescale = 71U;
 			new_state = array[countSend][1];
 		}
 		else{
 			repeat = false;
-			new_time = array[countSend][0]%0xFFFFU;
+			new_time = (array[countSend][0]%0xFFFFU) - 1U;
+			new_repeat = 0x00U;
 			new_prescale = 71U;
 			new_state = array[countSend][1];
 			Increment();
