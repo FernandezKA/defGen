@@ -2592,8 +2592,8 @@ __STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
  8000ebe:	f04f 33ff 	mov.w	r3, #4294967295
  8000ec2:	4093      	lsls	r3, r2
  8000ec4:	43db      	mvns	r3, r3
-  TIM_InitStruct.Autoreload = 3332;
- 8000ec6:	f640 5204 	movw	r2, #3332	; 0xd04
+  TIM_InitStruct.Autoreload = 1666;
+ 8000ec6:	f240 6282 	movw	r2, #1666	; 0x682
  8000eca:	f003 0301 	and.w	r3, r3, #1
  8000ece:	40b3      	lsls	r3, r6
     NVIC->IP[((uint32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
@@ -2607,7 +2607,7 @@ __STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
  8000edc:	f8c6 c000 	str.w	ip, [r6]
   TIM_InitStruct.Prescaler = 7199;
  8000ee0:	f8ad 502c 	strh.w	r5, [sp, #44]	; 0x2c
-  TIM_InitStruct.Autoreload = 3332;
+  TIM_InitStruct.Autoreload = 1666;
  8000ee4:	920d      	str	r2, [sp, #52]	; 0x34
   LL_TIM_Init(TIM2, &TIM_InitStruct);
  8000ee6:	f7ff fb23 	bl	8000530 <LL_TIM_Init>
