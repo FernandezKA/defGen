@@ -203,11 +203,11 @@ void SysTick_Handler(void)
   */
 void TIM1_UP_IRQHandler(void)
 {
-	TIM1->ARR = new_time;
-	TIM1->RCR = new_repeat;
-	TIM1->PSC = new_prescale;
-	processed = true;
+	//TIM1->ARR = new_time;
+	//TIM1->RCR = new_repeat;
+	//TIM1->PSC = new_prescale;
 	GPIOA->ODR = (new_state<<8);
+	processed = true;
 	TIM1->SR = ~TIM_SR_UIF;
 }
 
@@ -217,6 +217,7 @@ void TIM1_UP_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
 /*NOTE: ADD INDICATE WORKING*/
+	TIM2->SR = ~TIM_SR_UIF;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

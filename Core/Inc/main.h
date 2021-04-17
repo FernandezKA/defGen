@@ -45,9 +45,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-extern volatile uint16_t new_time;
-extern volatile uint16_t new_repeat;
-extern volatile uint16_t new_prescale;
 extern volatile uint16_t new_state;
 extern volatile uint16_t countSend;
 extern volatile uint16_t lenght;

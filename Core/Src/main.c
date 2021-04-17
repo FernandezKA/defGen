@@ -19,70 +19,106 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#define LENGHT 2
+#define LENGHT 34
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-volatile uint16_t new_time;
 volatile uint16_t new_state;
-volatile uint16_t new_repeat;
-volatile uint16_t new_prescale;
 volatile _Bool processed;
-_Bool repeat;
+volatile _Bool repeat;
 /****************************/
 volatile uint16_t countSend;
 //uint16_t lenght;
 /****************************/
-uint32_t array[LENGHT][2] = {{4,1},{4,0}};/*array for saving values*/
+uint32_t array[LENGHT][2] = {{0, 0},
+{10, 1},
+{10375, 0},
+{10515, 1},
+{74, 0},
+{10814, 1},
+{974, 0},
+{11114, 1},
+{15, 0},
+{11524, 1},
+{705, 0},
+{91, 1},
+{11906, 0},
+{11916, 1},
+{12107, 0},
+{10, 1},
+{12308, 0},
+{20, 1},
+{12509, 0},
+{12595, 1},
+{10, 0},
+{20, 1},
+{11, 0},
+{98, 1},
+{13112, 0},
+{32, 1},
+{313, 0},
+{9, 1},
+{514, 0},
+{4, 1},
+{13715, 0},
+{14677, 1},
+{60, 0},
+{46000, 1}};/*array for saving values*/
 
 static inline void Init(void){
 	countSend = 0x00U;
-	new_time = 1;
+	TIM1->ARR = 0x01U;
 	new_state = 0x00U;
-	new_repeat = 0x00U;
-	new_prescale = 71U;
+	TIM1->RCR = 0x00U;
+	TIM1->PSC = 71U;
 }
 static inline void Increment(void){
 	if(countSend < LENGHT - 1){
 		++countSend;
 	}
 	else{
-		countSend = 0x00U;
+		countSend = 0x04U;
 	}
 }
 static inline void getNext(void){
-	uint32_t temp = array[countSend][0];
-	uint16_t state = (uint32_t) array[countSend][1];
-	if(/*array[countSend][0]*/temp <= 2U){
-		if(/*array[countSend][0]*/temp == 0x00U){
-			Increment();/*skip this value as invalid*/
+	volatile uint32_t temp = array[countSend][0];
+	volatile uint16_t state = (uint32_t) array[countSend][1];
+	if(temp < 0x02U){
+		if(temp == 0x00U){
+			Increment();
 		}
 		else{
-		new_time = /*array[countSend][0]*/temp - 1U;
-		new_state = state;//array[countSend][1];
-		new_prescale = 35U;
-		Increment();
+			TIM1->ARR = temp;
 		}
 	}
-	else if(/*array[countSend][0]*/temp > 0x02U && /*array[countSend][0]*/temp < 0xFFFFU){
-		new_state = state;//array[countSend][1];
-		new_time = /*array[countSend][0]*/temp - 1U;
-		new_repeat = 0x00U;
-		new_prescale = 71U;
+	else if(temp > 0x02U &&temp < 0xFFFFU){
+		new_state = state;
+		//new_time = temp - 1U;
+		TIM1->ARR = temp -1U;
+		//new_repeat = 0x00U;
+		//TIM1->RCR = 0x00U;
+		//new_prescale = 71U;
+		//TIM1->PSC = 71U;
 		Increment();
 	}
 	else{
 		if(!repeat){
 			repeat = true;
-			new_time = (0xFFFFU) - 1;
-			new_repeat = (/*array[countSend][0]*/temp/0xFFFFU) - 1U;
-			new_prescale = 71U;
+			//new_time = (0xFFFFU) - 1;
+			TIM1->ARR = 0xFFFFU - 0x01U;
+			//new_repeat = (/*array[countSend][0]*/temp/0xFFFFU) - 1U;
+			TIM1->RCR = (temp/0xFFFFU)-0x01U;
+			//new_prescale = 71U;
+			//TIM1->PSC = 71U;
 			new_state = state;//array[countSend][1];
 		}
 		else{
 			repeat = false;
-			new_time = (/*array[countSend][0]*/temp%0xFFFFU) - 1U;
-			new_repeat = 0x00U;
-			new_prescale = 71U;
+			//new_time = (/*array[countSend][0]*/temp%0xFFFFU) - 1U;
+			TIM1->ARR = (temp%0xFFFFU)-0x01U;
+			//new_repeat = 0x00U;
+			TIM1->RCR = 0x00U;
+			//TIM1->PSC = 71U;
+			//new_prescale = 71U;
 			new_state = state;//array[countSend][1];
 			Increment();
 		}
