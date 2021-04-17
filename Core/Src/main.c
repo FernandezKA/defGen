@@ -167,6 +167,7 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
   LL_TIM_EnableCounter(TIM1);
+  LL_TIM_EnableCounter(TIM2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -178,7 +179,7 @@ int main(void)
 		  getNext();
 		  processed = false;
 	  }
-	  GPIOC->ODR^=(1U<<13);
+	  //GPIOC->ODR^=(1U<<13);
   }
   /* USER CODE END 3 */
 }
@@ -294,15 +295,16 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 1 */
 
   /* USER CODE END TIM2_Init 1 */
-  TIM_InitStruct.Prescaler = 71;
+  TIM_InitStruct.Prescaler = 7199;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 10000;
+  TIM_InitStruct.Autoreload = 3332;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM2, &TIM_InitStruct);
   LL_TIM_EnableARRPreload(TIM2);
   LL_TIM_SetClockSource(TIM2, LL_TIM_CLOCKSOURCE_INTERNAL);
   LL_TIM_SetTriggerOutput(TIM2, LL_TIM_TRGO_RESET);
   LL_TIM_DisableMasterSlaveMode(TIM2);
+  LL_TIM_EnableIT_UPDATE(TIM2);
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */

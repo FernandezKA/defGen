@@ -217,6 +217,7 @@ void TIM1_UP_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
 /*NOTE: ADD INDICATE WORKING*/
+	LL_GPIO_TogglePin(GPIOC, Led_Pin);
 	TIM2->SR = ~TIM_SR_UIF;
 }
 
