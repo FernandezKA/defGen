@@ -1,0 +1,16 @@
+--cpu Cortex-M3
+"defgen\startup_stm32f103xb.o"
+"defgen\main.o"
+"defgen\stm32f1xx_it.o"
+"defgen\stm32f1xx_ll_gpio.o"
+"defgen\stm32f1xx_ll_pwr.o"
+"defgen\stm32f1xx_ll_exti.o"
+"defgen\stm32f1xx_ll_tim.o"
+"defgen\stm32f1xx_ll_dma.o"
+"defgen\stm32f1xx_ll_rcc.o"
+"defgen\stm32f1xx_ll_utils.o"
+"defgen\system_stm32f1xx.o"
+--library_type=microlib --strict --scatter "defGen\defGen.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "defGen.map" -o defGen\defGen.axf

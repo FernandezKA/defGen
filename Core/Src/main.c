@@ -1,25 +1,39 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.</center></h2>
+  *
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#define LENGHT 34
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//Pair array[SIZE - 1];
-uint32_t lenght;
-uint32_t countSend;
-uint16_t ARR; /*autoreload*/
-uint16_t RR;  /*repetition register*/
-uint16_t PR;  /*prescaler*/
-uint16_t autoreload; /*variable for transmit new state into IRQ*/
-uint16_t repeat;
-uint16_t prescale;
-bool new_state;
-bool processed;  /*flag for state of loading new data into TIM1*/
-bool most_value; /*flag for indicate overflow size of CNT at TIM1*/
-Pair array[] = {
-{1, 0},
+volatile uint16_t new_state;
+volatile _Bool processed;
+volatile _Bool repeat;
+/****************************/
+volatile uint16_t countSend;
+//uint16_t lenght;
+/****************************/
+uint32_t array[LENGHT][2] = {{0, 0},
 {10, 1},
-{5, 0},
-{15, 1},
-{61, 0},
+{10375, 0},
+{10515, 1},
+{74, 0},
 {10814, 1},
 {974, 0},
 {11114, 1},
@@ -32,8 +46,8 @@ Pair array[] = {
 {12107, 0},
 {10, 1},
 {12308, 0},
-{20, 1}};
-/*{12509, 0},
+{20, 1},
+{12509, 0},
 {12595, 1},
 {10, 0},
 {20, 1},
@@ -48,24 +62,79 @@ Pair array[] = {
 {13715, 0},
 {14677, 1},
 {60, 0},
-{46000, 1}};
-/*Pair array[] = { {8000, 0}, {9000, 1}, {10000, 0}, {1000000, 1}};*/
+{46000, 1}};/*array for saving values*/
+
+static inline void Init(void){
+	countSend = 0x00U;
+	TIM1->ARR = 0x01U;
+	new_state = 0x00U;
+	TIM1->RCR = 0x00U;
+	TIM1->PSC = 71U;
+}
+static inline void Increment(void){
+	if(countSend < LENGHT - 1){
+		++countSend;
+	}
+	else{
+		countSend = 0x04U;
+	}
+}
+static inline void getNext(void){
+	volatile uint32_t temp = array[countSend][0];
+	volatile uint16_t state = (uint32_t) array[countSend][1];
+	if(temp < 0x03U){
+		switch(temp){
+			case 0x00U:
+				Increment();
+			break;
+			case 0x01U:
+				new_state = state;
+				TIM1->ARR = 0x01;
+				Increment();
+				break;
+			case 0x02U:
+				new_state = state;
+				TIM1->ARR = 0x01U;
+				Increment();
+			break;
+		}
+	}
+	else if(temp >= 0x03U &&temp < 0xFFFFU){
+		new_state = state;
+		TIM1->ARR = temp -1U;
+		Increment();
+	}
+	else{
+		if(!repeat){
+			repeat = true;
+			TIM1->ARR = 0xFFFFU - 0x01U;
+			TIM1->RCR = (temp/0xFFFFU)-0x01U;
+			new_state = state;
+		}
+		else{
+			repeat = false;
+			TIM1->ARR = (temp%0xFFFFU)-0x01U;
+			TIM1->RCR = 0x00U;
+			new_state = state;
+			Increment();
+		}
+	}
+}
+
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_NVIC_Init(void);
-/******************************************************************************/
+
 int main(void)
 {
-  /* MCU Configuration--------------------------------------------------------*/
-
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-  Init(34U, array[0]);
+
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   /* System interrupt init*/
@@ -74,16 +143,16 @@ int main(void)
   */
   LL_GPIO_AF_Remap_SWJ_NOJTAG();
 
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
   /* Configure the system clock */
   SystemClock_Config();
-    
-  /*Array with value of matrix parameters*/
 
-  
-  //Buff buff;
-  /*for(int i = 0; i< 4; ++i){
-      array[i++] = pair;
-}*/
+  /* USER CODE BEGIN SysInit */
+  Init();
+  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -93,27 +162,20 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-
   LL_TIM_EnableCounter(TIM1);
+  LL_TIM_EnableCounter(TIM2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //LL_GPIO_TogglePin(GPIOC, Led_Pin);
-    GPIOC->ODR^=(1U<<13);
     /* USER CODE END WHILE */
-    /*the previous value is processed*/
-    if (processed)
-    {
-      //LL_TIM_DisableIT_UPDATE(TIM1);
-      getTIM(); /*read next value at variable for most speed of sensitive*/
-      processed = false;
-      //LL_TIM_EnableIT_UPDATE(TIM1);
-      //buff.getResult();
-    }
-    /* USER CODE BEGIN 3 */
+	  if(processed){
+		  getNext();
+		  processed = false;
+	  }
+	  //GPIOC->ODR^=(1U<<13);
   }
   /* USER CODE END 3 */
 }
@@ -125,30 +187,33 @@ int main(void)
 void SystemClock_Config(void)
 {
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
-  while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_2)
+  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_2)
   {
   }
   LL_RCC_HSE_Enable();
 
-  /* Wait till HSE is ready */
-  while (LL_RCC_HSE_IsReady() != 1)
+   /* Wait till HSE is ready */
+  while(LL_RCC_HSE_IsReady() != 1)
   {
+
   }
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_9);
   LL_RCC_PLL_Enable();
 
-  /* Wait till PLL is ready */
-  while (LL_RCC_PLL_IsReady() != 1)
+   /* Wait till PLL is ready */
+  while(LL_RCC_PLL_IsReady() != 1)
   {
+
   }
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
-  /* Wait till System clock is ready */
-  while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+   /* Wait till System clock is ready */
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
   {
+
   }
   LL_Init1msTick(72000000);
   LL_SetSystemCoreClock(72000000);
@@ -161,11 +226,8 @@ void SystemClock_Config(void)
 static void MX_NVIC_Init(void)
 {
   /* TIM1_UP_IRQn interrupt configuration */
-  NVIC_SetPriority(TIM1_UP_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
+  NVIC_SetPriority(TIM1_UP_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(TIM1_UP_IRQn);
-  /* TIM2_IRQn interrupt configuration */
-  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
-  NVIC_EnableIRQ(TIM2_IRQn);
 }
 
 /**
@@ -190,7 +252,7 @@ static void MX_TIM1_Init(void)
   /* USER CODE END TIM1_Init 1 */
   TIM_InitStruct.Prescaler = 71;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 1;
+  TIM_InitStruct.Autoreload = 10;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM1, &TIM_InitStruct);
@@ -202,6 +264,7 @@ static void MX_TIM1_Init(void)
   /* USER CODE BEGIN TIM1_Init 2 */
 
   /* USER CODE END TIM1_Init 2 */
+
 }
 
 /**
@@ -221,21 +284,27 @@ static void MX_TIM2_Init(void)
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM2);
 
+  /* TIM2 interrupt Init */
+  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),1, 0));
+  NVIC_EnableIRQ(TIM2_IRQn);
+
   /* USER CODE BEGIN TIM2_Init 1 */
 
   /* USER CODE END TIM2_Init 1 */
-  TIM_InitStruct.Prescaler = 0;
+  TIM_InitStruct.Prescaler = 7199;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 100;
+  TIM_InitStruct.Autoreload = 1666;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM2, &TIM_InitStruct);
   LL_TIM_EnableARRPreload(TIM2);
   LL_TIM_SetClockSource(TIM2, LL_TIM_CLOCKSOURCE_INTERNAL);
   LL_TIM_SetTriggerOutput(TIM2, LL_TIM_TRGO_RESET);
   LL_TIM_DisableMasterSlaveMode(TIM2);
+  LL_TIM_EnableIT_UPDATE(TIM2);
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
+
 }
 
 /**
@@ -256,7 +325,7 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(Led_GPIO_Port, Led_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(Out_GPIO_Port, Out_Pin);
+  LL_GPIO_SetOutputPin(Out_GPIO_Port, Out_Pin);
 
   /**/
   GPIO_InitStruct.Pin = Led_Pin;
@@ -268,9 +337,10 @@ static void MX_GPIO_Init(void)
   /**/
   GPIO_InitStruct.Pin = Out_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   LL_GPIO_Init(Out_GPIO_Port, &GPIO_InitStruct);
+
 }
 
 /* USER CODE BEGIN 4 */
@@ -292,7 +362,7 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef USE_FULL_ASSERT
+#ifdef  USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
